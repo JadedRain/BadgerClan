@@ -29,7 +29,7 @@ Console.WriteLine("In the output from the 'devtunnel host' command, look for the
 
 
 app.MapGet("/", () => "Sample BadgerClan bot.  Modify the code in Program.cs to change how the bot performs.");
-
+int moveSet = 2;
 app.MapPost("/", (MoveRequest request) =>
 {
     // ***************************************************************************
@@ -41,10 +41,25 @@ app.MapPost("/", (MoveRequest request) =>
     // **
     // ***************************************************************************
     // ***************************************************************************
+    var myMoves = new List<Move>();
+    if (moveSet == 1)
+    {
+        myMoves = SuperSimpleExampleBot.MakeMoves(request);//Very simple bot example.  Delete this line when you write your own bot.
+    }
+    else if (moveSet == 2)
+    {
+        myMoves = ModifiedSimple.MakeMoves(request);
+    }
+    else if(moveSet == 3)
+    {
 
-    var myMoves = SuperSimpleExampleBot.MakeMoves(request);//Very simple bot example.  Delete this line when you write your own bot.
-
+    }
     return new MoveResponse(myMoves);
+});
+
+app.MapPost("/setmove/{Id}", (int Id) =>
+{
+    moveSet = Id;
 });
 
 app.Run();
