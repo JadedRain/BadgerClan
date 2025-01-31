@@ -1,6 +1,7 @@
 using BadgerClan.Logic;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddLogging();
 var app = builder.Build();
 
 string url = app.Configuration["ASPNETCORE_URLS"]?.Split(";").Last() ?? throw new Exception("Unable to find URL");
@@ -52,7 +53,7 @@ app.MapPost("/", (MoveRequest request) =>
     }
     else if(moveSet == 3)
     {
-
+        myMoves = KiteBack.MakeMoves(request);
     }
     return new MoveResponse(myMoves);
 });
