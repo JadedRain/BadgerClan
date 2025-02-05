@@ -29,10 +29,10 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void ChangeServer(string servername)
+    private async Task ChangeServer(string servername)
     {
         ServerName = servername;
-        SetUri(servername);
+        await SetUri(servername);
         OnPropertyChanged(nameof(ServerName));
     }
     
@@ -40,7 +40,7 @@ public partial class MainViewModel : ObservableObject
     {
         await _httpClient.PostAsJsonAsync($"{_uri}/setmove/{Id}", Id);
     }
-    private void SetUri(string servername)
+    private async Task SetUri(string servername)
     {
         switch (servername)
         {
@@ -48,7 +48,7 @@ public partial class MainViewModel : ObservableObject
                 _uri = "https://badgerclanloganbot1-hqh7htb3gkf2gbes.westus-01.azurewebsites.net";
                 break;
             case "Server 2":
-                _uri = "";
+                _uri = "https://badgerclanloganbot2-g3bfaqgge7fqbtfp.canadacentral-01.azurewebsites.net";
                 break;
             default:
                 _uri = "http://localhost:5217";
