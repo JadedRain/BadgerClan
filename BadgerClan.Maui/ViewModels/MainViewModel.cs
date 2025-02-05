@@ -26,7 +26,7 @@ public partial class MainViewModel : ObservableObject
     
     private async Task SendStrategyChange()
     {
-        await _httpClient.PostAsJsonAsync($"http://localhost:5217/setmove/{Id}", Id);
+        await _httpClient.PostAsJsonAsync($"https://badgerclanloganbot1-hqh7htb3gkf2gbes.westus-01.azurewebsites.net/setmove/{Id}", Id);
     }
     public MainViewModel(HttpClient httpClient)
     {

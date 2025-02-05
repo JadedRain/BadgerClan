@@ -39,4 +39,6 @@ app.MapPost("/setmove/{Id}", (int Id) =>
     moveSet = Id;
 });
 
+app.MapGet("/currentmove", () => moveSet);
+
 app.Run();
