@@ -14,26 +14,21 @@
                   ColumnSpacing="15"
                   RowDefinitions="auto,*,auto"
                   RowSpacing="10">
-                <Label Text="Current Sever: "/>
-                <Label Text="{Binding ServerName}"
-                       Grid.Row="1"/>
+                <Label Text="Current Severs: "/>
+                <CollectionView ItemsSource="{Binding Servers}"
+                                Grid.Row="1">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="*,*">
+                                <Label Text="{Binding Name}"/>
+                                <CheckBox Grid.Column="1"
+                                          IsChecked="{Binding IsChecked}">
+                                </CheckBox>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
-                <Grid RowDefinitions="auto,auto,auto"
-                      RowSpacing="10"
-                      Grid.Row="2">
-                    <Button Text="Local"
-                            Command="{Binding ChangeServerCommand}"
-                            CommandParameter="Local"
-                            Grid.Row="0"/>
-                    <Button Text="Server 1"
-                            Command="{Binding ChangeServerCommand}"
-                            CommandParameter="Server 1"
-                            Grid.Row="1"/>
-                    <Button Text="Server 2"
-                            Command="{Binding ChangeServerCommand}"
-                            CommandParameter="Server 2"
-                            Grid.Row="2"/>
-                </Grid>
                 <Label Text="Current Strategy:"
                        Grid.Column="1"/>
                 <Label Text="{Binding Id}"
