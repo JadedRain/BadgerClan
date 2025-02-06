@@ -7,7 +7,7 @@ var app = builder.Build();
 
 app.MapGet("/", () => "Sample BadgerClan bot.  Modify the code in Program.cs to change how the bot performs.");
 int moveSet = 2;
-app.MapPost("/", (MoveRequest request) =>
+app.MapPost("/", (GameState request) =>
 {
     // ***************************************************************************
     // ***************************************************************************

@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
-
-namespace BadgerClan.Logic;
-
+using BadgerClan.Logic;
 public class KiteBack
 {
-    public static List<Move> MakeMoves(MoveRequest request)
+    public static List<Move> MakeMoves(GameState request)
     {
         var myTeamId = request.YourTeamId;
         var myUnits = findMyUnits(myTeamId, request.Units);
@@ -65,9 +63,9 @@ public class KiteBack
         return moves;
     }
 
-    private static List<UnitDto> findMyUnits(int myTeamId, IEnumerable<UnitDto> units)
+    private static List<Unit> findMyUnits(int myTeamId, IEnumerable<Unit> units)
     {
-        var myUnits = new List<UnitDto>();
+        var myUnits = new List<Unit>();
         foreach (var unit in units)
         {
             if (unit.Team == myTeamId)
@@ -79,9 +77,9 @@ public class KiteBack
         return myUnits;
     }
 
-    private static List<UnitDto> findEnemies(int myTeamId, IEnumerable<UnitDto> units)
+    private static List<Unit> findEnemies(int myTeamId, IEnumerable<Unit> units)
     {
-        var enemies = new List<UnitDto>();
+        var enemies = new List<Unit>();
         foreach (var unit in units)
         {
             if (unit.Team != myTeamId)
@@ -93,7 +91,7 @@ public class KiteBack
         return enemies;
     }
 
-    private static UnitDto findClosest(UnitDto unit, List<UnitDto> enemies)
+    private static Unit findClosest(Unit unit, List<Unit> enemies)
     {
         var closest = enemies[0];
         foreach (var enemy in enemies)
@@ -107,9 +105,9 @@ public class KiteBack
         return closest;
     }
 
-    private static List<UnitDto> findArchers(int myTeamId, List<UnitDto> units) 
+    private static List<Unit> findArchers(int myTeamId, List<Unit> units) 
     {
-        var archers = new List<UnitDto>();
+        var archers = new List<Unit>();
         foreach (var unit in units)
         {
             if (unit.Type == "Archer")
