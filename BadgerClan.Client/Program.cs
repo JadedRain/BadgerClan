@@ -6,10 +6,10 @@ using ProtoBuf.Grpc.Server;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddLogging();
 builder.Services.AddCodeFirstGrpc();
-builder.Services.AddSingleton<MoveSetService>();
+//builder.Services.AddSingleton<MoveSetService>();
 
 var app = builder.Build();
-app.MapGrpcService<StrategySwapService>();
+//app.MapGrpcService<StrategySwapService>();
 
 
 
