@@ -1,23 +1,25 @@
 using BadgerClan.Logic;
+using BadgerClan.Logic.Services;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using ProtoBuf.Grpc.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddLogging();
+builder.Services.AddCodeFirstGrpc();
+builder.Services.AddSingleton<MoveSetService>();
+
 var app = builder.Build();
+app.MapGrpcService<StrategySwapService>();
+
+
 
 
 app.MapGet("/", () => "Sample BadgerClan bot.  Modify the code in Program.cs to change how the bot performs.");
-int moveSet = 2;
-app.MapPost("/", (GameState request) =>
+app.MapPost("/", (GameState request, MoveSetService moveSetService) =>
 {
-    // ***************************************************************************
-    // ***************************************************************************
-    // **
-    // ** Your code goes right here.
-    // ** Look in the request object to see the game state.
-    // ** Then add your moves to the myMoves list.
-    // **
-    // ***************************************************************************
-    // ***************************************************************************
+    // Should work 
+    int moveSet = moveSetService.MoveSet;
+
     var myMoves = new List<Move>();
     if (moveSet == 1)
     {
@@ -25,6 +27,7 @@ app.MapPost("/", (GameState request) =>
     }
     else if (moveSet == 2)
     {
+        Console.WriteLine("Moveset");
         myMoves = ModifiedSimple.MakeMoves(request);
     }
     else if(moveSet == 3)
@@ -34,14 +37,15 @@ app.MapPost("/", (GameState request) =>
     return new MoveResponse(myMoves);
 });
 
-app.MapPost("/setmove/{Id}", (int Id) =>
+app.MapPost("/setmove/{Id}", (int Id, MoveSetService moveSetService) =>
 {
-    moveSet = Id;
+   moveSetService.MoveSet = Id;
 });
 
-app.MapGet("/currentmove", () => moveSet);
+app.MapGet("/currentmove", (MoveSetService moveSetService) => moveSetService.MoveSet);
 
 app.Run();
 
 public record GameState(IEnumerable<Unit> Units, IEnumerable<int> TeamIds, int YourTeamId, int TurnNumber, string GameId, int BoardSize, int Medpacs, int NextMedpac);
 public record Unit(string Type, int Id, int Attack, int AttackDistance, int Health, int MaxHealth, double Moves, double MaxMoves, Coordinate Location, int Team);
+

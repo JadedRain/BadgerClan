@@ -12,7 +12,7 @@
 
             <Grid ColumnDefinitions="*,.5*,.5*,.5*,*"
                   ColumnSpacing="15"
-                  RowDefinitions="auto,*,auto"
+                  RowDefinitions="auto,*,auto,auto"
                   RowSpacing="10">
                 <Label Text="Current Severs: "/>
                 <CollectionView ItemsSource="{Binding Servers}"
@@ -28,6 +28,13 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
+
+                <Entry Placeholder="Add Grpc"
+                       Text="{Binding GrpcUri}"
+                       Grid.Row="2"/>
+                <Button Text="Add Grpc"
+                        Command="{Binding AddServerCommand}"
+                        Grid.Row="3"/>
 
                 <Label Text="Current Strategy:"
                        Grid.Column="1"/>

@@ -1,6 +1,9 @@
-﻿using CommunityToolkit.Maui.Core.Extensions;
+﻿using BadgerClan.Logic.Services;
+using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Grpc.Net.Client;
+using ProtoBuf.Grpc.Client;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -22,6 +25,18 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<Server> _servers;
 
+    [ObservableProperty]
+    private string _grpcUri;
+
+    [ObservableProperty]
+    private StrategySwapResponse _response;
+
+    [RelayCommand]
+    private void AddServer()
+    {
+        Servers.Add(new Server { Name = GrpcUri, Uri = GrpcUri, IsChecked = false, IsGrcp = true });
+        OnPropertyChanged(nameof(Servers));
+    }
 
     [RelayCommand]
     private async Task ChangeStrategy(string id)
@@ -29,7 +44,14 @@ public partial class MainViewModel : ObservableObject
         Id = int.Parse(id);
         foreach (var server in Servers.Where(i => i.IsChecked))
         {
-            await SendStrategyChange(server.Uri);
+            if (server.IsGrcp)
+            {
+               await StrategySwapGrpc(server);
+            }
+            else
+            {
+                await SendStrategyChange(server.Uri);
+            }
         }
         OnPropertyChanged(nameof(Id));
     }
@@ -37,6 +59,17 @@ public partial class MainViewModel : ObservableObject
     private async Task SendStrategyChange(string uri)
     {
         await _httpClient.PostAsJsonAsync($"{uri}/setmove/{Id}", Id);
+    }
+
+    private async Task StrategySwapGrpc(Server server)
+    {
+        GrpcClientFactory.AllowUnencryptedHttp2 = true;
+        using var channel = GrpcChannel.ForAddress(server.Uri);
+        var swapClient = channel.CreateGrpcService<IStrategySwapService>();
+        var Response = await swapClient.StrategySwap(new StrategySwapRequest
+        {
+            StrategyId = Id
+        });
     }
     public MainViewModel(HttpClient httpClient)
     {
@@ -47,6 +80,7 @@ public partial class MainViewModel : ObservableObject
             new Server() {Name = "Local", Uri =  "http://localhost:5217", IsChecked = true},
             new Server() {Name = "Server 1", Uri =  "https://badgerclanloganbot1-hqh7htb3gkf2gbes.westus-01.azurewebsites.net", IsChecked = false},
             new Server() {Name = "Server 2", Uri =  "https://badgerclanloganbot2-g3bfaqgge7fqbtfp.canadacentral-01.azurewebsites.net", IsChecked = false}
+            //new Server() {Name = "Grpc", Uri = "http://localhost:7232", IsChecked = false}
         };
   
 
@@ -58,4 +92,5 @@ public class Server
     public string Name { get; set; }
     public string Uri { get; set;  }
     public bool IsChecked { get; set; }
+    public bool IsGrcp { get; set; } = false;
 }
